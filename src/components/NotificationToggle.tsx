@@ -5,17 +5,13 @@ import requestNotificationPermission from '../utility/requestNotificationPermiss
 
 interface NotificationToggleProps {
   // isNotificationEnabled: boolean;
+  isPushSupported: boolean;
   toggleNotification: (enable: boolean) => void;
 }
  
 class NotificationToggle extends React.Component<NotificationToggleProps> {
-  private isSupported: boolean; // If the browser supports push-notification-related APIs
-
   constructor(props: NotificationToggleProps) {
     super(props);
-    this.isSupported = 'serviceWorker' in navigator
-      && 'Notification' in window
-      && 'PushManager' in window;
   }
 
   private handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,7 +28,7 @@ class NotificationToggle extends React.Component<NotificationToggleProps> {
   public render() {
     const isChecked = false;
 
-    if (this.isSupported) {
+    if (this.props.isPushSupported) {
       return (
         <div className="notification-toggle">
           <input type="checkbox" defaultChecked={isChecked} onChange={this.handleChange} />

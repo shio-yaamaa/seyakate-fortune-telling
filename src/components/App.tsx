@@ -8,13 +8,17 @@ import SubscriptionManager from '../utility/SubscriptionManager';
 
 import { Result } from '../utility/Result';
 
+interface AppProps {
+  isPushSupported: boolean;
+}
+
 interface AppState {
   name: string,
   todaysResult: Result | null
 }
 
-class App extends React.Component<{}, AppState> {
-  constructor(props: {}) {
+class App extends React.Component<AppProps, AppState> {
+  constructor(props: AppProps) {
     super(props);
     this.state = {
       name: '',
@@ -34,7 +38,9 @@ class App extends React.Component<{}, AppState> {
     return (
       <div className="app">
         <Description />
-        <NotificationToggle toggleNotification={this.toggleNotification} />
+        <NotificationToggle
+          isPushSupported={this.props.isPushSupported}
+          toggleNotification={this.toggleNotification} />
       </div>
     );
   }
