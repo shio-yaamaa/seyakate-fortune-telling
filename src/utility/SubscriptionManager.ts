@@ -1,3 +1,4 @@
+import DynamoDBManager from './DynamoDBManager';
 import { urlBase64ToUint8Array } from './utility';
 
 class SubscriptionManager {
@@ -12,12 +13,11 @@ class SubscriptionManager {
       const registration = await navigator.serviceWorker.ready;
       const existingSubscription = await registration.pushManager.getSubscription();
       if (existingSubscription) {
-        console.log('subscription already exists', existingSubscription);
+        console.log('Subscription already exists', existingSubscription);
       } else {
         const newSubscription = await this.createSubscription(registration);
-        console.log('newSubscription', newSubscription);
-        console.log('JSON', JSON.stringify(newSubscription));
-        // this.registerSubscriptionInDB(newSubscription);
+        console.log('New subscription', JSON.parse(JSON.stringify(newSubscription)));
+        this.addSubscriptionToDB(newSubscription);
       }
     } catch (error) {
       alert('Subscribe時にエラーが発生しました');
@@ -31,26 +31,13 @@ class SubscriptionManager {
     });
   }
   
-  // Add subscription data to the firestore DB
-  // private registerSubscriptionInDB(subscription: PushSubscription) {
-  //   console.log('Subscription to register: ', subscription);
-    
-  //   const db = firebase.firestore();
-  //   const subscriptionWithStringKeys = JSON.parse(JSON.stringify(subscription)); // Needed to get keys as strings
-  //   db.collection('subscriptions').add(Object.assign(
-  //     subscriptionWithStringKeys,
-  //     {
-  //       createdAt: Date.now(),
-  //       updatedAt: Date.now()
-  //     }
-  //   ))
-  //   .then((docRef: firebase.firestore.DocumentReference) => {
-  //     console.log('Document written with ID: ', docRef.id);
-  //   })
-  //   .catch((error: Error) => {
-  //     console.log(error);
-  //   });
-  // }
+  // Add subscription data to Dynamo DB
+  private async addSubscriptionToDB(subscription: PushSubscription) {
+    console.log('Subscription to register: ', subscription);
+    const id = await DynamoDBManager.addSubscription(subscription);
+    console.log('Subscription ID:', id);
+    // TODO: Save the ID
+  }
 
   public unsubscribe() {
     // TODO
