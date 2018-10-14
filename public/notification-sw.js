@@ -8,15 +8,19 @@ self.addEventListener('activate', () => console.log('Activated'));
 self.addEventListener('push', event => {
   console.log('Push notification received!');
   if (event.data) {
-    NotificationManager.showNotification(self.registration);
+    notificationManager.showNotification(self.registration);
   }
 });
 
 self.addEventListener('notificationclick', event => {
-  NotificationManager.handleClick(event, clients);
+  notificationManager.handleClick(event, clients);
 });
 
-// Utility classes
+// Notification Utility
+
+const NOTIFICATION_TAG = 'seyakate-fortune-telling';
+const NOTIFICATION_TITLE = '今日の服部';
+const NOTIFICATION_URL = 'https://www.google.com/';
 
 class NotificationManager {
   get bodyText() {
@@ -38,7 +42,9 @@ class NotificationManager {
   }
   
   handleClick(event, clients) {
-    clients.openWindow('https://www.google.com/');
+    clients.openWindow(NOTIFICATION_URL);
     event.notification.close();
   }
 }
+
+const notificationManager = new NotificationManager();

@@ -27,6 +27,6 @@
     "webpack",
     "jest",
     "src/setupTests.ts",
-    "public/service-worker.js"
+    "public/*.js"
   ]
 }

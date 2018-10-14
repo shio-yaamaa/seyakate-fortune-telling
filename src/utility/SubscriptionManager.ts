@@ -27,7 +27,7 @@ class SubscriptionManager {
   private async createSubscription(registration: ServiceWorkerRegistration): Promise<PushSubscription> {
     return registration.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(process.env.VAPID_PUBLIC_KEY!)
+      applicationServerKey: urlBase64ToUint8Array(process.env.REACT_APP_VAPID_PUBLIC_KEY!)
     });
   }
   
