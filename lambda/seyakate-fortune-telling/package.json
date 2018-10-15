@@ -1,0 +1,17 @@
+{
+  "name": "seyakate-fortune-telling",
+  "version": "1.0.0",
+  "description": "seyakate-fortune-telling",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "zip": "zip -r lambda.zip index.js node_modules",
+    "generate-vapid-keys": "web-push generate-vapid-keys"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.334.0",
+    "web-push": "^3.3.3"
+  }
+}

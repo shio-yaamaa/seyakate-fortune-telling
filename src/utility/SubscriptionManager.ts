@@ -1,4 +1,4 @@
-import DynamoDBManager from './DynamoDBManager';
+import SubscriptionDBManager from './SubscriptionDBManager';
 import { urlBase64ToUint8Array } from './utility';
 
 class SubscriptionManager {
@@ -34,7 +34,7 @@ class SubscriptionManager {
   // Add subscription data to Dynamo DB
   private async addSubscriptionToDB(subscription: PushSubscription) {
     console.log('Subscription to register: ', subscription);
-    const id = await DynamoDBManager.addSubscription(subscription);
+    const id = await SubscriptionDBManager.addSubscription(subscription);
     console.log('Subscription ID:', id);
     // TODO: Save the ID
   }
