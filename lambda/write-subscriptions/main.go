@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"log"
+	"os"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -36,9 +37,14 @@ type RequestBody struct {
 	SubscriptionId string       `json:"subscriptionId"` // Needed when "delete"
 }
 
+type ResponseBody struct {
+	SubscriptionId string `json:"subscriptionId"`
+	IsError        bool   `json:"isError"`
+}
+
 func connectToDb() *dynamodb.DynamoDB {
 	sess, err := session.NewSession(&aws.Config{
-		Region: aws.String("ap-northeast-1"),
+		Region: aws.String(os.Getenv("DYNAMODB_REGION")),
 	})
 	if err != nil {
 		log.Print("Failed to connect to the DB")
@@ -47,7 +53,7 @@ func connectToDb() *dynamodb.DynamoDB {
 	return dynamodb.New(sess)
 }
 
-func createSubscription(db *dynamodb.DynamoDB, subscription Subscription) string {
+func createSubscription(db *dynamodb.DynamoDB, subscription Subscription) (string, error) {
 	// Attach a UUID to the subscription
 	uuid := uuid.NewSHA1(uuid.Nil, []byte(subscription.Endpoint)).String()
 	storableSubscription := StorableSubscription{
@@ -60,28 +66,28 @@ func createSubscription(db *dynamodb.DynamoDB, subscription Subscription) string
 	if err != nil {
 		log.Print("Failed to create an AttributeValue")
 		log.Print(err)
-		return ""
+		return "", err
 	}
 
 	params := &dynamodb.PutItemInput{
-		TableName: aws.String("seyakate-fortune-telling-subscriptions"),
+		TableName: aws.String(os.Getenv("SUBSCRIPTION_TABLE_NAME")),
 		Item:      attributeValue,
 	}
 
 	_, err = db.PutItem(params)
 
 	if err == nil {
-		return uuid
+		return uuid, nil
 	} else {
 		log.Print("Error putting a subscription item")
 		log.Print(err)
-		return ""
+		return "", err
 	}
 }
 
-func deleteSubscription(db *dynamodb.DynamoDB, subscriptionId string) string {
+func deleteSubscription(db *dynamodb.DynamoDB, subscriptionId string) (string, error) {
 	params := &dynamodb.DeleteItemInput{
-		TableName: aws.String("seyakate-fortune-telling-subscriptions"),
+		TableName: aws.String(os.Getenv("SUBSCRIPTION_TABLE_NAME")),
 		Key: map[string]*dynamodb.AttributeValue{
 			"id": {
 				S: aws.String(subscriptionId),
@@ -92,11 +98,11 @@ func deleteSubscription(db *dynamodb.DynamoDB, subscriptionId string) string {
 	_, err := db.DeleteItem(params)
 
 	if err == nil {
-		return subscriptionId
+		return subscriptionId, nil
 	} else {
 		log.Print("Failed to delete a subscription")
 		log.Print(err)
-		return ""
+		return "", err
 	}
 }
 
@@ -108,17 +114,27 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 	json.Unmarshal([]byte(request.Body), &requestBody)
 
 	// Execute the specified operation
-	responseBody := ""
+	subscriptionId := ""
+	isError := true
 	db := connectToDb()
 	if requestBody.Operation == "create" {
-		responseBody = createSubscription(db, requestBody.Subscription)
+		id, err := createSubscription(db, requestBody.Subscription)
+		subscriptionId, isError = id, err != nil
 	}
 	if requestBody.Operation == "delete" {
-		responseBody = deleteSubscription(db, requestBody.SubscriptionId)
+		id, err := deleteSubscription(db, requestBody.SubscriptionId)
+		subscriptionId, isError = id, err != nil
 	}
 
+	responseBody, _ := json.Marshal(ResponseBody{SubscriptionId: subscriptionId, IsError: isError})
+
 	return events.APIGatewayProxyResponse{
-		Body:       responseBody,
+		Headers:    map[string]string{
+			"Access-Control-Allow-Origin": "*",
+			"Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+    		"Access-Control-Allow-Headers": "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With",
+		},
+		Body:       string(responseBody),
 		StatusCode: 200,
 	}, nil
 }

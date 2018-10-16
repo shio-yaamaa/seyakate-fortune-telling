@@ -4,7 +4,6 @@
   "description": "seyakate-fortune-telling",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "zip": "zip -r lambda.zip index.js node_modules",
     "generate-vapid-keys": "web-push generate-vapid-keys"
   },

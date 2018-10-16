@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk');
 const webpush = require('web-push');
 
-const docClient = new AWS.DynamoDB.DocumentClient({region: 'ap-northeast-1'});
+const docClient = new AWS.DynamoDB.DocumentClient({region: process.env.DYNAMODB_REGION});
 
 const sendPushNotification = async (subscription) => {
   webpush.setVapidDetails(
