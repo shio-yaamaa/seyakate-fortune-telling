@@ -43,7 +43,7 @@ class LocalDatabase extends Dexie {
     await this.configs.put({key: 'name', value: name});
   }
 
-  // Subscription
+  // Subscription ID
 
   public async getSubscriptionId(): Promise<string | null> {
     const subscriptionIdEntry = await this.configs.get('subscriptionId');
@@ -62,7 +62,7 @@ class LocalDatabase extends Dexie {
     await this.configs.put({key: 'subscriptionId', value: null});
   }
 
-  // Result
+  // Results
 
   public async addTodaysResult(result: Result) {
     const date = JSTDate.today().toDBNumber();

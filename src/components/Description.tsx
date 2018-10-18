@@ -2,6 +2,7 @@ import * as React from 'react';
 import './Description.css';
 
 class Description extends React.Component {
+  // TODO: Should change depending on the Notification & Push support
   public render() {
     return (
       <div className="description">

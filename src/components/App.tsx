@@ -2,6 +2,7 @@ import * as React from 'react';
 import './App.css';
 
 import Description from './Description';
+import NameInput from './NameInput';
 import NotificationToggle from './NotificationToggle';
 
 import SubscriptionManager from '../utility/SubscriptionManager';
@@ -38,6 +39,12 @@ class App extends React.Component<AppProps, AppState> {
     });
   }
 
+  private setName = (name: string) => {
+    LocalDatabase.setName(name);
+    this.setState({name});
+    // TODO: Retrieve the result again!
+  }
+
   private toggleNotification = (enable: boolean) => {
     if (enable) {
       SubscriptionManager.subscribe().then(() => {
@@ -61,6 +68,9 @@ class App extends React.Component<AppProps, AppState> {
     return (
       <div className="app">
         <Description />
+        <NameInput
+          name={this.state.name}
+          setName={this.setName} />
         <NotificationToggle
           isPushSupported={this.props.isPushSupported}
           isSubscriptionDBProcessing={this.state.isSubscriptionDBProcessing}
