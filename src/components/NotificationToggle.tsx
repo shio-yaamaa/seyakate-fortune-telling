@@ -5,7 +5,7 @@ import requestNotificationPermission from '../utility/requestNotificationPermiss
 
 interface NotificationToggleProps {
   isPushSupported: boolean;
-  isSubscriptionDBProcessing: boolean; // true when waiting for a response from Lambda
+  isSubscriptionDBProcessing: boolean;
   isNotificationEnabled: boolean;
   toggleNotification: (enable: boolean) => void;
 }
@@ -27,8 +27,6 @@ class NotificationToggle extends React.Component<NotificationToggleProps> {
   }
 
   public render() {
-    const isChecked = false;
-
     if (this.props.isPushSupported) {
       if (this.props.isSubscriptionDBProcessing) {
         return (
@@ -37,7 +35,7 @@ class NotificationToggle extends React.Component<NotificationToggleProps> {
       } else {
         return (
           <div className="notification-toggle">
-            <input type="checkbox" defaultChecked={isChecked} onChange={this.handleChange} />
+            <input type="checkbox" checked={this.props.isNotificationEnabled} onChange={this.handleChange} />
             <label>通知を受け取る</label>
             <p>通知は日本時間で午前6時くらいです</p>
           </div>

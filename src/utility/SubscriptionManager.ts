@@ -1,4 +1,5 @@
 import SubscriptionDBManager from './SubscriptionDBManager';
+import LocalDatabase from './LocalDatabase';
 import { urlBase64ToUint8Array } from './utility';
 
 class SubscriptionManager {
@@ -17,9 +18,11 @@ class SubscriptionManager {
       } else {
         const newSubscription = await this.createSubscription(registration);
         console.log('New subscription', JSON.parse(JSON.stringify(newSubscription)));
-        this.addSubscriptionToDB(newSubscription);
+        const id = await this.addSubscriptionToRemoteDB(newSubscription);
+        await LocalDatabase.setSubscriptionId(id);
       }
     } catch (error) {
+      console.log(error);
       alert('Subscribe時にエラーが発生しました');
     }
   }
@@ -31,16 +34,42 @@ class SubscriptionManager {
     });
   }
   
-  // Add subscription data to Dynamo DB
-  private async addSubscriptionToDB(subscription: PushSubscription) {
+  private async addSubscriptionToRemoteDB(subscription: PushSubscription): Promise<string> {
     console.log('Subscription to register: ', subscription);
     const id = await SubscriptionDBManager.addSubscription(subscription);
     console.log('Subscription ID:', id);
-    // TODO: Save the ID
+    if (id) {
+      return id;
+    } else {
+      throw new Error('Error adding a subscription to remote DB');
+    }
   }
 
-  public unsubscribe() {
-    // TODO
+  public async unsubscribe() {
+    try {
+      // Remove subscription data from DB
+      const subscriptionId = await LocalDatabase.getSubscriptionId();
+      if (!subscriptionId) {
+        throw new Error('Local DB failed');
+      }
+      const subscriptionIdFromDB = await SubscriptionDBManager.deleteSubscription(subscriptionId);
+      if (!subscriptionIdFromDB) {
+        throw new Error('Remote DB failed');
+      }
+      await LocalDatabase.unsetSubscription();
+
+      // Cancel the actual subscription
+      const registration = await navigator.serviceWorker.ready;
+      await this.clearSubscription(registration);
+    } catch (error) {
+      console.log(error);
+      alert('Unsubscribe時にエラーが発生しました');
+    }
+  }
+
+  private async clearSubscription(registration: ServiceWorkerRegistration) {
+    const subscription = await registration.pushManager.getSubscription();
+    subscription && await subscription.unsubscribe();
   }
 }
 

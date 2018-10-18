@@ -1,5 +1,21 @@
 # Todo
 
+# Date/Time
+
+This app only cares about JST.
+
+# Unsubscribing script
+
+```javascript
+navigator.serviceWorker.ready.then(registration =>
+  registration.pushManager.getSubscription().then(subscription =>
+    subscription.unsubscribe().then(() =>
+      console.log('Unsubscribed!')
+    )
+  )
+);
+```
+
 # Component Structure
 
 ```xml

@@ -2,7 +2,7 @@ export enum Char {
   Se = 0, Ya, Ka, Te
 }
 
-export class Result {
+export default class Result {
   private static charMap = new Map<Char, string>([
     [Char.Se, 'せ'],
     [Char.Ya, 'や'],

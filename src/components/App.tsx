@@ -5,9 +5,9 @@ import Description from './Description';
 import NotificationToggle from './NotificationToggle';
 
 import SubscriptionManager from '../utility/SubscriptionManager';
-import IndexedDBManager from '../utility/IndexedDBManager';
+import LocalDatabase from '../utility/LocalDatabase';
 
-import { Result } from '../utility/Result';
+import Result from '../utility/Result';
 
 interface AppProps {
   isPushSupported: boolean;
@@ -15,7 +15,7 @@ interface AppProps {
 
 interface AppState {
   name: string,
-  isSubscriptionDBProcessing: boolean,
+  isSubscriptionDBProcessing: boolean, // True while waiting for a response from Lambda
   isNotificationEnabled: boolean,
   todaysResult: Result | null
 }
@@ -24,19 +24,37 @@ class App extends React.Component<AppProps, AppState> {
   constructor(props: AppProps) {
     super(props);
     this.state = {
-      name: IndexedDBManager.name,
+      name: '',
       isSubscriptionDBProcessing: false,
-      isNotificationEnabled: IndexedDBManager.isNotificationEnabled,
+      isNotificationEnabled: false,
       todaysResult: null
     };
+
+    LocalDatabase.getName().then((name: string) => {
+      this.setState({name});
+    });
+    LocalDatabase.getIsNotificationEnabled().then((isNotificationEnabled: boolean) => {
+      this.setState({isNotificationEnabled});
+    });
   }
 
   private toggleNotification = (enable: boolean) => {
     if (enable) {
-      SubscriptionManager.subscribe();
+      SubscriptionManager.subscribe().then(() => {
+        this.setState({
+          isSubscriptionDBProcessing: false,
+          isNotificationEnabled: true
+        });
+      });
     } else {
-      SubscriptionManager.unsubscribe();
+      SubscriptionManager.unsubscribe().then(() => {
+        this.setState({
+          isSubscriptionDBProcessing: false,
+          isNotificationEnabled: false
+        });
+      });
     }
+    this.setState({isSubscriptionDBProcessing: true});
   };
 
   public render() {
