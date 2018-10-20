@@ -15,10 +15,12 @@
     "build": "react-scripts-ts build",
     "test": "react-scripts-ts test --env=jsdom",
     "eject": "react-scripts-ts eject",
-    
+
     "lambda-push-zip": "cd lambda/push/ && zip -r lambda.zip index.js node_modules && cd ../../",
-    "lambda-write-subscriptions-build": "GOOS=linux GOARCH=amd64 go build -o lambda/write-subscriptions/main lambda/write-subscriptions/main.go",
-    "lambda-write-subscriptions-zip": "cd lambda/write-subscriptions/ && zip main.zip main && cd ../../"
+    "lambda-write-subscriptions-build": "make build -C lambda/write-subscriptions/",
+    "lambda-write-subscriptions-zip": "make zip -C lambda/write-subscriptions/",
+    "lambda-fetch-result-build": "make build -C lambda/fetch-result/",
+    "lambda-fetch-result-zip": "make zip -C lambda/fetch-result/"
   },
   "devDependencies": {
     "@types/jest": "^23.3.5",

@@ -4,11 +4,14 @@ import './App.css';
 import Description from './Description';
 import NameInput from './NameInput';
 import NotificationToggle from './NotificationToggle';
+import TodaysResult from './TodaysResult';
 
 import SubscriptionManager from '../utility/SubscriptionManager';
 import LocalDatabase from '../utility/LocalDatabase';
+import fetchResult from '../utility/fetchResult';
 
 import Result from '../utility/Result';
+import JSTDate from '../utility/JSTDate';
 
 interface AppProps {
   isPushSupported: boolean;
@@ -18,6 +21,7 @@ interface AppState {
   name: string,
   isSubscriptionDBProcessing: boolean, // True while waiting for a response from Lambda
   isNotificationEnabled: boolean,
+  isFetchingTodaysResult: boolean,
   todaysResult: Result | null
 }
 
@@ -28,11 +32,36 @@ class App extends React.Component<AppProps, AppState> {
       name: '',
       isSubscriptionDBProcessing: false,
       isNotificationEnabled: false,
+      isFetchingTodaysResult: false,
       todaysResult: null
     };
 
     LocalDatabase.getName().then((name: string) => {
-      this.setState({name});
+      this.setState({name, isFetchingTodaysResult: true});
+      // If today's result has not been fetched yet, go get it
+      LocalDatabase.getResult(JSTDate.today()).then((result: Result | null) => {
+        if (result) {
+          this.setState({
+            isFetchingTodaysResult: false,
+            todaysResult: result
+          });
+        } else {
+          fetchResult(name)
+            .then((fetchedResult: Result) => {
+              this.setState({
+                isFetchingTodaysResult: false,
+                todaysResult: fetchedResult
+              });
+            })
+            .catch(error => {
+              console.log(error);
+              this.setState({
+                isFetchingTodaysResult: false,
+                todaysResult: null
+              })
+            });
+        }
+      });
     });
     LocalDatabase.getIsNotificationEnabled().then((isNotificationEnabled: boolean) => {
       this.setState({isNotificationEnabled});
@@ -76,6 +105,9 @@ class App extends React.Component<AppProps, AppState> {
           isSubscriptionDBProcessing={this.state.isSubscriptionDBProcessing}
           isNotificationEnabled={this.state.isNotificationEnabled}
           toggleNotification={this.toggleNotification} />
+        <TodaysResult
+          isFetching={this.state.isFetchingTodaysResult}
+          todaysResult={this.state.todaysResult} />
       </div>
     );
   }

@@ -1,6 +1,8 @@
 import * as React from 'react';
 import './NameInput.css';
 
+import { DEFAULT_NAME } from '../utility/constants';
+
 interface NameInputProps {
   name: string;
   setName: (name: string) => void;
@@ -35,7 +37,8 @@ class NameInput extends React.Component<NameInputProps, NameInputState> {
     this.setState({isConfirmButtonAvailable: this.currentInputName !== this.props.name});
   }
 
-  private handleClick = () => {
+  private handleConfirm = () => {
+    this.currentInputName = this.currentInputName || DEFAULT_NAME;
     this.props.setName(this.currentInputName);
     this.setState({isConfirmButtonAvailable: false});
   }
@@ -48,7 +51,7 @@ class NameInput extends React.Component<NameInputProps, NameInputState> {
           value={this.currentInputName}
           onChange={this.handleChange}/>
         <button
-          onClick={this.handleClick}
+          onClick={this.handleConfirm}
           disabled={!this.state.isConfirmButtonAvailable}>
           決定
         </button>

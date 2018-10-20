@@ -1,6 +1,7 @@
 import Dexie from 'dexie';
 import Result from './Result';
 import JSTDate from './JSTDate';
+import { DEFAULT_NAME } from './constants';
 
 interface ConfigEntry {
   key: string | null,
@@ -8,8 +9,8 @@ interface ConfigEntry {
 }
 
 interface ResultEntry {
-  date: number,
-  result: Result
+  date: number, // Not a JSTDate object since it's a primary key
+  chars: [number, number, number, number]
 }
 
 class LocalDatabase extends Dexie {
@@ -22,12 +23,12 @@ class LocalDatabase extends Dexie {
     // The first entry represents the primary key of the table
     this.version(1).stores({
       configs: 'key, value',
-      results: 'date, result'
+      results: 'date, chars'
     });
 
     // Executed only when the DB is newly created
     this.on('populate', () => {
-      this.configs.add({key: 'name', value: null});
+      this.configs.add({key: 'name', value: DEFAULT_NAME});
       this.configs.add({key: 'subscriptionId', value: null});
     });
   }
@@ -64,12 +65,34 @@ class LocalDatabase extends Dexie {
 
   // Results
 
-  public async addTodaysResult(result: Result) {
-    const date = JSTDate.today().toDBNumber();
-    await this.results.put({date, result}, date);
+  public async getResult(date: JSTDate): Promise<Result | null> {
+    const resultEntry = await this.results.get(date.toDBNumber());
+    return resultEntry ? Result.fromChars(resultEntry.chars) : null;
   }
 
-  // async getAllResults(): Promise<Result[]>
+  // Results are sorted in reverse chronological order
+  public async getRecentResultsWithDates(count: number): Promise<Map<JSTDate, Result>> {
+    const resultEntries = await this.results
+      .orderBy('date')
+      .reverse()
+      .offset(1) // Skip today's result
+      .limit(count)
+      .toArray();
+    return new Map<JSTDate, Result>(resultEntries.map(entry => {
+      // Requres type assertion since TypeScript infers [JSTDate, Result] is of type (JSTDate | Result)[]
+      return ([JSTDate.fromDBNumber(entry.date), Result.fromChars(entry.chars)] as [JSTDate, Result]);
+    }));
+  }
+
+  // Results are not sorted
+  public async getAllResults(): Promise<Result[]> {
+    return (await this.results.toArray()).map(entry => Result.fromChars(entry.chars));
+  }
+
+  public async setTodaysResult(result: Result) {
+    const date = JSTDate.today().toDBNumber();
+    await this.results.put({date, chars: result.toChars()});
+  }
 }
 
 export default new LocalDatabase();

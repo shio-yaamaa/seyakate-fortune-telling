@@ -107,7 +107,20 @@ func deleteSubscription(db *dynamodb.DynamoDB, subscriptionId string) (string, e
 }
 
 func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	log.Print(request.Body)
+	log.Print(request)
+
+	responseHeaders := map[string]string{
+		"Access-Control-Allow-Origin":  os.Getenv("ACCESS_CONTROL_ALLOW_ORIGIN"),
+		"Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+    	"Access-Control-Allow-Headers": "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With",
+	}
+
+	if request.HTTPMethod == "OPTIONS" {
+		return events.APIGatewayProxyResponse{
+			Headers:    responseHeaders,
+			StatusCode: 200,
+		}, nil
+	}
 
 	// Parse the request
 	requestBody := RequestBody{}
@@ -129,11 +142,7 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 	responseBody, _ := json.Marshal(ResponseBody{SubscriptionId: subscriptionId, IsError: isError})
 
 	return events.APIGatewayProxyResponse{
-		Headers:    map[string]string{
-			"Access-Control-Allow-Origin": "*",
-			"Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
-    		"Access-Control-Allow-Headers": "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With",
-		},
+		Headers:    responseHeaders,
 		Body:       string(responseBody),
 		StatusCode: 200,
 	}, nil

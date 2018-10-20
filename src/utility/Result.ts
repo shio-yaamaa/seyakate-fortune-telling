@@ -25,22 +25,22 @@ export default class Result {
       const char: Char | null = Array.from(Result.charMap.entries()).reduce((accumulator, current) => {
         return current[1] === originalString[i] ? current[0] : accumulator;
       }, null);
-      if (!char) throw Error('Invalid character');
+      if (char === null) throw Error('Invalid character');
       chars[i] = char;
     }
 
     return new Result(...chars);
   }
 
-  public static fromStorage(numbers: [number, number, number, number]): Result {
-    return new Result(...numbers);
-  }
-
   public toString(): string {
     return this.chars.map(char => Result.charMap.get(char)).join('') + '工藤';
   }
 
-  public toStorable(): [number, number, number, number] {
+  public static fromChars(numbers: [number, number, number, number]): Result {
+    return new Result(...numbers);
+  }
+
+  public toChars(): [number, number, number, number] {
     return this.chars;
   }
 }

@@ -12,7 +12,8 @@ class JSTDate {
   }
 
   public static today(): JSTDate {
-    const jstMoment = moment().tz('Asia/Tokyo');
+    // TODO: Wrong date; It's 9 hrs ahead of JST
+    const jstMoment = moment.utc();
     console.log('current JST', jstMoment);
     return new JSTDate(jstMoment.year(), jstMoment.month(), jstMoment.date());
   }
@@ -21,7 +22,7 @@ class JSTDate {
     return this.year * 10 ** 4 + this.month * 10 ** 2 + this.date;
   }
 
-  public fromDBNumber(dbNumber: number): JSTDate {
+  public static fromDBNumber(dbNumber: number): JSTDate {
     const year = Math.floor(dbNumber / 10 ** 4);
     const month = Math.floor((dbNumber % 10 ** 4) / 10 ** 2);
     const date = dbNumber % 10 ** 2;
