@@ -1,16 +1,18 @@
 import Dexie from 'dexie';
 import Result from './Result';
 import JSTDate from './JSTDate';
+import { arrayEqual } from './utility';
 import { DEFAULT_NAME } from './constants';
 
 interface ConfigEntry {
-  key: string | null,
-  value: string | null
+  key: string | null;
+  value: string | null;
 }
 
 interface ResultEntry {
-  date: number, // Not a JSTDate object since it's a primary key
-  chars: [number, number, number, number]
+  date: number; // Not a JSTDate object since it's a primary key
+  chars: [number, number, number, number];
+  distance: number;
 }
 
 class LocalDatabase extends Dexie {
@@ -23,7 +25,7 @@ class LocalDatabase extends Dexie {
     // The first entry represents the primary key of the table
     this.version(1).stores({
       configs: 'key, value',
-      results: 'date, chars'
+      results: 'date, chars, distance'
     });
 
     // Executed only when the DB is newly created
@@ -80,18 +82,50 @@ class LocalDatabase extends Dexie {
       .toArray();
     return new Map<JSTDate, Result>(resultEntries.map(entry => {
       // Requres type assertion since TypeScript infers [JSTDate, Result] is of type (JSTDate | Result)[]
-      return ([JSTDate.fromDBNumber(entry.date), Result.fromChars(entry.chars)] as [JSTDate, Result]);
+      return [JSTDate.fromDBNumber(entry.date), Result.fromChars(entry.chars)] as [JSTDate, Result];
     }));
   }
 
-  // Results are not sorted
-  public async getAllResults(): Promise<Result[]> {
-    return (await this.results.toArray()).map(entry => Result.fromChars(entry.chars));
+  public async getSeyakateCount(): Promise<number> {
+    return await this.results
+      .filter(result => {
+        return arrayEqual(result.chars, Result.seyakate);
+      })
+      .count();
+  }
+
+  // Returns a map of results and their counts
+  public async getResultsFilteredByDistance(distance: number): Promise<Map<Result, number>> {
+    const closeResultEntries = await this.results
+      .where({ distance })
+      .toArray();
+
+    // TODO: Inefficient implementation; Need to store chars as a string to efficiently bundle up identical results
+    const charsCountMap = new Map<[number, number, number, number], number>(); // Keys are result.chars
+    for (const resultEntry of closeResultEntries) {
+      for (const key of charsCountMap.keys()) {
+        if (arrayEqual(key, resultEntry.chars)) {
+          charsCountMap.set(key, charsCountMap.get(key)! + 1);
+          break;
+        }
+      }
+      charsCountMap.set(resultEntry.chars, 1);
+    }
+    
+    const mapElements = Array.from(charsCountMap.entries()).map(([chars, count]) => {
+      return [Result.fromChars(chars), count] as [Result, number];
+    });
+
+    return new Map<Result, number>(mapElements);
   }
 
   public async setTodaysResult(result: Result) {
     const date = JSTDate.today().toDBNumber();
-    await this.results.put({date, chars: result.toChars()});
+    await this.results.put({
+      date,
+      chars: result.toChars(),
+      distance: result.distance
+    });
   }
 }
 
