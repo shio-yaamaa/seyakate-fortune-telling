@@ -5,6 +5,9 @@ import Description from './Description';
 import NameInput from './NameInput';
 import NotificationToggle from './NotificationToggle';
 import TodaysResult from './TodaysResult';
+import History from './History';
+
+import { HISTORY_COUNT } from '../utility/constants';
 
 import SubscriptionManager from '../utility/SubscriptionManager';
 import LocalDatabase from '../utility/LocalDatabase';
@@ -18,11 +21,12 @@ interface AppProps {
 }
 
 interface AppState {
-  name: string,
-  isSubscriptionDBProcessing: boolean, // True while waiting for a response from Lambda
-  isNotificationEnabled: boolean,
-  isFetchingTodaysResult: boolean,
-  todaysResult: Result | null
+  name: string;
+  isSubscriptionDBProcessing: boolean; // True while waiting for a response from Lambda
+  isNotificationEnabled: boolean;
+  isFetchingTodaysResult: boolean;
+  todaysResult: Result | null;
+  history: Map<JSTDate, Result>;
 }
 
 class App extends React.Component<AppProps, AppState> {
@@ -33,7 +37,8 @@ class App extends React.Component<AppProps, AppState> {
       isSubscriptionDBProcessing: false,
       isNotificationEnabled: false,
       isFetchingTodaysResult: false,
-      todaysResult: null
+      todaysResult: null,
+      history: new Map<JSTDate, Result>()
     };
 
     LocalDatabase.getName().then((name: string) => {
@@ -64,13 +69,16 @@ class App extends React.Component<AppProps, AppState> {
       });
     });
     LocalDatabase.getIsNotificationEnabled().then((isNotificationEnabled: boolean) => {
-      this.setState({isNotificationEnabled});
+      this.setState({ isNotificationEnabled });
+    });
+    LocalDatabase.getRecentResultsWithDates(HISTORY_COUNT).then(history => {
+      this.setState({ history });
     });
   }
 
   private setName = (name: string) => {
     LocalDatabase.setName(name);
-    this.setState({name});
+    this.setState({ name });
     // TODO: Retrieve the result again!
   }
 
@@ -108,6 +116,8 @@ class App extends React.Component<AppProps, AppState> {
         <TodaysResult
           isFetching={this.state.isFetchingTodaysResult}
           todaysResult={this.state.todaysResult} />
+        <History
+          history={this.state.history} />
       </div>
     );
   }

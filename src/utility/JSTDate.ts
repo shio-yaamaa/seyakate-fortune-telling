@@ -1,5 +1,7 @@
 import * as moment from 'moment-timezone';
 
+moment.tz.setDefault('Asia/Tokyo');
+
 class JSTDate {
   private year: number;
   private month: number; // 0-11
@@ -12,9 +14,7 @@ class JSTDate {
   }
 
   public static today(): JSTDate {
-    // TODO: Wrong date; It's 9 hrs ahead of JST
-    const jstMoment = moment.utc();
-    console.log('current JST', jstMoment);
+    const jstMoment = moment();
     return new JSTDate(jstMoment.year(), jstMoment.month(), jstMoment.date());
   }
 
@@ -31,6 +31,11 @@ class JSTDate {
 
   public toDisplayString(): string {
     return `${this.year}-${this.month + 1}-${this.date}`;
+  }
+
+  // Used as keys in render() to identify list elements
+  public toKeyString(): string {
+    return `${this.year}-${this.month}-${this.date}`;
   }
 
   public isToday(): boolean {

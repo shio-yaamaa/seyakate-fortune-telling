@@ -15,6 +15,7 @@ class TodaysResult extends React.Component<TodaysResultProps> {
       : (this.props.todaysResult ? this.props.todaysResult.toString() : '取得できていません');
     return (
       <div className="todays-result">
+        <p>今日の結果</p>
         <p>{textContent}</p>
       </div>
     );
