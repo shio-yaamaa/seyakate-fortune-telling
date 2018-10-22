@@ -26,3 +26,7 @@
   font-weight: bold;
   color: #333333;
 }
+
+.todays-result .tweet-button {
+  margin-top: 1.5rem;
+}

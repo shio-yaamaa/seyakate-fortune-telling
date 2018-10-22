@@ -6,7 +6,7 @@ class Description extends React.Component {
   public render() {
     return (
       <section className="description">
-        <p><a href="https://shindanmaker.com/735043">せやかて工藤占い</a>の結果を毎朝お届けします。名前を入力して、通知を有効にしてください。</p>
+        <p><a href={process.env.REACT_APP_SHINDAN_URL}>せやかて工藤占い</a>の結果を毎朝お届けします。名前を入力して、通知を有効にしてください。</p>
       </section>
     );
   }

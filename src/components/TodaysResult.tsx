@@ -1,6 +1,8 @@
 import * as React from 'react';
 import './TodaysResult.css';
 
+import TweetButton from './TweetButton';
+
 import JSTDate from '../utility/JSTDate';
 import LocalDatabase from '../utility/LocalDatabase';
 import Result from '../utility/Result';
@@ -67,6 +69,7 @@ class TodaysResult extends React.Component<TodaysResultProps, TodaysResultState>
             ? 'おめでとうございます！'
             : '明日も頑張りましょう。'}
         </p>}
+        {this.state.todaysResult && <TweetButton todaysResult={this.state.todaysResult} />}
       </section>
     );
   }
