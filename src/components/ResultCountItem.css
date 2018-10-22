@@ -1,0 +1,17 @@
+.result-count-item {
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  padding: 0.3rem;
+  border: 1px solid;
+  border-radius: 0.2rem;
+}
+
+.result-count-item > p {
+  padding: 0.2rem;
+}
+
+.result-count-item > .result-count-item-count {
+  font-size: 0.8rem;
+  color: rgba(1, 1, 1, 0.7);
+}

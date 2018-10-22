@@ -36,11 +36,11 @@ class NotificationToggle extends React.Component<NotificationToggleProps> {
         );
       } else {
         return (
-          <div className="notification-toggle">
+          <section className="notification-toggle">
             <input type="checkbox" checked={this.props.isNotificationEnabled} onChange={this.handleChange} />
             <label>通知を受け取る</label>
-            <p>通知は日本時間で午前6時くらいです</p>
-          </div>
+            <p className="secondary-text notification-tip">通知は日本時間で午前6時くらいです</p>
+          </section>
         );
       }
     } else {

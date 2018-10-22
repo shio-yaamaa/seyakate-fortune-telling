@@ -1,0 +1,18 @@
+.statistics {
+  border-top: 1px solid #EEEEEE;
+}
+
+.statistics > h2 {
+  margin-top: 0.5rem;
+}
+
+.result-count-item-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -0.2rem; /* To cancel out the left-most item's margin-left */
+}
+
+.result-count-item-container > * {
+  margin-left: 0.2rem;
+  margin-top: 0.2rem;
+}

@@ -5,9 +5,9 @@ class Description extends React.Component {
   // TODO: Should change depending on the Notification & Push support
   public render() {
     return (
-      <div className="description">
-        <p><a href="https://shindanmaker.com/735043">服部平次占い</a>の結果を毎朝お届けします。名前を入力して、通知を有効にしてください。</p>
-      </div>
+      <section className="description">
+        <p><a href="https://shindanmaker.com/735043">せやかて工藤占い</a>の結果を毎朝お届けします。名前を入力して、通知を有効にしてください。</p>
+      </section>
     );
   }
 }

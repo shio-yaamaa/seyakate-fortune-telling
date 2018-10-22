@@ -45,17 +45,20 @@ class NameInput extends React.Component<NameInputProps, NameInputState> {
 
   public render() {
     return (
-      <div className="name-input-container">
-        <input
-          placeholder={DEFAULT_NAME}
-          value={this.currentInputName}
-          onChange={this.handleChange}/>
-        <button
-          onClick={this.handleConfirm}
-          disabled={!this.state.isConfirmButtonAvailable}>
-          決定
-        </button>
-      </div>
+      <section className="name-input">
+        <div className="name-input-container">
+          <input
+            type="text"
+            placeholder={DEFAULT_NAME}
+            value={this.currentInputName}
+            onChange={this.handleChange}/>
+          <button
+            onClick={this.handleConfirm}
+            disabled={!this.state.isConfirmButtonAvailable}>
+            決定
+          </button>
+          </div>
+      </section>
     );
   }
 }

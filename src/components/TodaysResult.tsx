@@ -48,7 +48,6 @@ class TodaysResult extends React.Component<TodaysResultProps, TodaysResultState>
         this.props.notifyResultDBUpdate();
       })
       .catch(error => {
-        console.log(error);
         this.setState({ isFetching: false, todaysResult: null });
       });
   }
@@ -57,12 +56,18 @@ class TodaysResult extends React.Component<TodaysResultProps, TodaysResultState>
     if (!this.props.isVisible) return null;
     const textContent = this.state.isFetching
       ? '取得中'
-      : (this.state.todaysResult ? this.state.todaysResult.toString() : '取得できていません');
+      : (this.state.todaysResult ? this.state.todaysResult.toString() : '取得できません');
     return (
-      <div className="todays-result">
-        <p>今日の結果</p>
-        <p>{textContent}</p>
-      </div>
+      <section
+        className={`todays-result ${(this.state.todaysResult && this.state.todaysResult.distance === 0) ? 'is-seyakate' : ''}`}>
+        <p className="todays-result-title">今日の結果</p>
+        <p className="todays-result-content">{textContent}</p>
+        {this.state.todaysResult && <p className="todays-result-message">
+          {this.state.todaysResult.distance === 0
+            ? 'おめでとうございます！'
+            : '明日も頑張りましょう。'}
+        </p>}
+      </section>
     );
   }
 }

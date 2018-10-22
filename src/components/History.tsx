@@ -3,6 +3,8 @@ import './History.css';
 
 import { HISTORY_COUNT } from '../utility/constants';
 
+import NoItem from './NoItem';
+
 import JSTDate from '../utility/JSTDate';
 import LocalDatabase from '../utility/LocalDatabase';
 import Result from '../utility/Result';
@@ -31,16 +33,16 @@ class History extends React.Component<HistoryProps, HistoryState> {
     if (!this.props.isVisible) return null;
     if (this.state.history.size === 0) {
       return (
-        <div className="history">
-          <p>履歴</p>
-          <p>履歴はまだありません</p>
-        </div>
+        <section className="history">
+          <h1>最近の履歴</h1>
+          <NoItem message="履歴はまだありません" />
+        </section>
       );
     } else {
       return (
-        <div className="history">
-          <p>最近の履歴</p>
-          <table>
+        <section className="history">
+          <h1>最近の履歴</h1>
+          <table className="history-table">
             <tbody>
               {Array.from(this.state.history.entries()).map(([date, result]) => {
                 return (
@@ -52,7 +54,7 @@ class History extends React.Component<HistoryProps, HistoryState> {
               })}
             </tbody>
           </table>
-        </div>
+        </section>
       );
     }
   }

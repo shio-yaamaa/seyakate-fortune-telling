@@ -1,0 +1,25 @@
+.history-table {
+  border-collapse: collapse;
+}
+
+.history-table td {
+  padding: 0.5rem 1rem;
+}
+
+.history-table td:first-child {
+  color: #777777;
+}
+
+.history-table tr:not(:first-child) > td {
+  border-top: 1px solid #EEEEEE;
+}
+
+@media (max-width: 640px) {
+  .history-table {
+    width: 100%;
+  }
+
+  .history-table td {
+    width: auto;
+  }
+}

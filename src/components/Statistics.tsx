@@ -1,6 +1,9 @@
 import * as React from 'react';
 import './Statistics.css';
 
+import ResultCountItem from './ResultCountItem';
+import NoItem from './NoItem';
+
 import LocalDatabase from '../utility/LocalDatabase';
 import Result from '../utility/Result';
 
@@ -34,7 +37,6 @@ class Statistics extends React.Component<StatisticsProps, StatisticsState> {
   }
 
   private fetchMetrics() {
-    console.log('fetching metrics');
     LocalDatabase.getSeyakateCount().then(count => {
       this.setState({ seyakateCount: count });
     });
@@ -48,13 +50,19 @@ class Statistics extends React.Component<StatisticsProps, StatisticsState> {
 
   private createCloseResultList(distance: number, closeResults: Map<Result, number>): JSX.Element {
     if (closeResults.size === 0) {
-      return <p>{distance === 2 ? 'ちょっと' : ''}惜しかったことはありません</p>;
+      return <NoItem message={`${distance === 2 ? 'ちょっと' : ''}惜しかったことはありません`} />;
     }
     return (
-      <div>
+      <div className="result-count-item-container">
         {Array.from(closeResults.entries()).map(([result, count]) => {
           const resultString = result.toString();
-          return <p key={resultString}>{resultString} {count}</p>
+          return (
+            <ResultCountItem
+              key={resultString}
+              resultString={resultString}
+              count={count}
+              color={distance === 1 ? 'green' : 'blue'} />
+          );
         })}
       </div>
     );
@@ -63,14 +71,17 @@ class Statistics extends React.Component<StatisticsProps, StatisticsState> {
   public render() {
     if (!this.props.isVisible) return null;
     return (
-      <div className="statistics">
-        <p>記録</p>
-        <p>せやかて工藤: {this.state.seyakateCount}回</p>
-        <p>惜しい</p>
+      <section className="statistics">
+        <h1>回数</h1>
+        <ResultCountItem
+          resultString={'せやかて工藤'}
+          count={this.state.seyakateCount}
+          color="red" />
+        <h2>惜しい</h2>
         {this.createCloseResultList(1, this.state.closeResults)}
-        <p>ちょっと惜しい</p>
+        <h2>ちょっと惜しい</h2>
         {this.createCloseResultList(2, this.state.bitCloseResults)}
-      </div>
+      </section>
     );
   }
 }

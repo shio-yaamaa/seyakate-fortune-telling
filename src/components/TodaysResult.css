@@ -1,0 +1,28 @@
+.todays-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #F5F5F5;
+}
+
+@keyframes seyakate-gradient {
+  0% { background-color: #FFCDD2; } /* Red 100 */
+  20% { background-color: #FFE082; } /* Amber 200 */
+  40% { background-color: #C8E6C9; } /* Green 100 */
+  60% { background-color: #BBDEFB; } /* Blue 100 */
+  80% { background-color: #E1BEE7; } /* Purple 100 */
+  100% { background-color: #FFCDD2; } /* Red 100 */
+}
+
+.todays-result.is-seyakate {
+  animation: seyakate-gradient 3s infinite;
+}
+
+.todays-result-content {
+  margin-top: 0.2rem;
+  margin-bottom: 0.8rem;
+  border-bottom: 2px solid #42b983;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333333;
+}
