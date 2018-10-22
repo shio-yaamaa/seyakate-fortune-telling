@@ -2,7 +2,6 @@ import Dexie from 'dexie';
 import Result from './Result';
 import JSTDate from './JSTDate';
 import { arrayEqual } from './utility';
-import { DEFAULT_NAME } from './constants';
 
 interface ConfigEntry {
   key: string | null;
@@ -30,8 +29,8 @@ class LocalDatabase extends Dexie {
 
     // Executed only when the DB is newly created
     this.on('populate', () => {
-      this.configs.add({key: 'name', value: DEFAULT_NAME});
-      this.configs.add({key: 'subscriptionId', value: null});
+      this.configs.add({ key: 'name', value: '' });
+      this.configs.add({ key: 'subscriptionId', value: null });
     });
   }
 

@@ -4,14 +4,19 @@ import './Statistics.css';
 import LocalDatabase from '../utility/LocalDatabase';
 import Result from '../utility/Result';
 
+interface StatisticsProps {
+  isVisible: boolean;
+  isUpdated: boolean; // Corresponds to App's isResultDBUpdated
+}
+
 interface StatisticsState {
   seyakateCount: number;
   closeResults: Map<Result, number>;
   bitCloseResults: Map<Result, number>;
 }
 
-class Statistics extends React.Component<{}, StatisticsState> {
-  constructor(props: {}) {
+class Statistics extends React.Component<StatisticsProps, StatisticsState> {
+  constructor(props: StatisticsProps) {
     super(props);
     this.state = {
       seyakateCount: 0,
@@ -19,6 +24,17 @@ class Statistics extends React.Component<{}, StatisticsState> {
       bitCloseResults: new Map<Result, number>()
     };
 
+    this.fetchMetrics();
+  }
+
+  public componentDidUpdate(prevProps: StatisticsProps) {
+    if (!prevProps.isUpdated && this.props.isUpdated) {
+      this.fetchMetrics();
+    }
+  }
+
+  private fetchMetrics() {
+    console.log('fetching metrics');
     LocalDatabase.getSeyakateCount().then(count => {
       this.setState({ seyakateCount: count });
     });
@@ -45,6 +61,7 @@ class Statistics extends React.Component<{}, StatisticsState> {
   }
 
   public render() {
+    if (!this.props.isVisible) return null;
     return (
       <div className="statistics">
         <p>記録</p>

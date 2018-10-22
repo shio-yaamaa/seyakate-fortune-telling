@@ -4,6 +4,7 @@ import './NotificationToggle.css';
 import requestNotificationPermission from '../utility/requestNotificationPermission';
 
 interface NotificationToggleProps {
+  isVisible: boolean;
   isPushSupported: boolean;
   isSubscriptionDBProcessing: boolean;
   isNotificationEnabled: boolean;
@@ -27,6 +28,7 @@ class NotificationToggle extends React.Component<NotificationToggleProps> {
   }
 
   public render() {
+    if (!this.props.isVisible) return null;
     if (this.props.isPushSupported) {
       if (this.props.isSubscriptionDBProcessing) {
         return (

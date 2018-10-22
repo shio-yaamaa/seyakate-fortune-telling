@@ -10,10 +10,6 @@ import Statistics from './Statistics';
 
 import SubscriptionManager from '../utility/SubscriptionManager';
 import LocalDatabase from '../utility/LocalDatabase';
-import fetchResult from '../utility/fetchResult';
-
-import Result from '../utility/Result';
-import JSTDate from '../utility/JSTDate';
 
 interface AppProps {
   isPushSupported: boolean;
@@ -23,8 +19,7 @@ interface AppState {
   name: string;
   isSubscriptionDBProcessing: boolean; // True while waiting for a response from Lambda
   isNotificationEnabled: boolean;
-  isFetchingTodaysResult: boolean;
-  todaysResult: Result | null;
+  isResultDBUpdated: boolean;
 }
 
 class App extends React.Component<AppProps, AppState> {
@@ -34,46 +29,26 @@ class App extends React.Component<AppProps, AppState> {
       name: '',
       isSubscriptionDBProcessing: false,
       isNotificationEnabled: false,
-      isFetchingTodaysResult: false,
-      todaysResult: null
+      isResultDBUpdated: false
     };
 
     LocalDatabase.getName().then((name: string) => {
-      this.setState({name, isFetchingTodaysResult: true});
-      // If today's result has not been fetched yet, go get it
-      LocalDatabase.getResult(JSTDate.today()).then((result: Result | null) => {
-        if (result) {
-          this.setState({
-            isFetchingTodaysResult: false,
-            todaysResult: result
-          });
-        } else {
-          fetchResult(name)
-            .then((fetchedResult: Result) => {
-              this.setState({
-                isFetchingTodaysResult: false,
-                todaysResult: fetchedResult
-              });
-            })
-            .catch(error => {
-              console.log(error);
-              this.setState({
-                isFetchingTodaysResult: false,
-                todaysResult: null
-              })
-            });
-        }
-      });
+      this.setState({ name });
     });
     LocalDatabase.getIsNotificationEnabled().then((isNotificationEnabled: boolean) => {
       this.setState({ isNotificationEnabled });
     });
   }
 
+  public componentDidUpdate(prevProps: AppProps, prevState: AppState) {
+    if (prevState.isResultDBUpdated) {
+      this.setState({ isResultDBUpdated: false });
+    }
+  }
+
   private setName = (name: string) => {
     LocalDatabase.setName(name);
     this.setState({ name });
-    // TODO: Retrieve the result again!
   }
 
   private toggleNotification = (enable: boolean) => {
@@ -95,6 +70,10 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({isSubscriptionDBProcessing: true});
   };
 
+  private notifyResultDBUpdate = () => {
+    this.setState({ isResultDBUpdated: true });
+  };
+
   public render() {
     return (
       <div className="app">
@@ -103,15 +82,20 @@ class App extends React.Component<AppProps, AppState> {
           name={this.state.name}
           setName={this.setName} />
         <NotificationToggle
+          isVisible={this.state.name !== ''}
           isPushSupported={this.props.isPushSupported}
           isSubscriptionDBProcessing={this.state.isSubscriptionDBProcessing}
           isNotificationEnabled={this.state.isNotificationEnabled}
           toggleNotification={this.toggleNotification} />
         <TodaysResult
-          isFetching={this.state.isFetchingTodaysResult}
-          todaysResult={this.state.todaysResult} />
-        <History />
-        <Statistics />
+          isVisible={this.state.name !== ''}
+          name={this.state.name}
+          notifyResultDBUpdate={this.notifyResultDBUpdate} />
+        <History
+          isVisible={this.state.name !== ''} />
+        <Statistics
+          isVisible={this.state.name !== ''}
+          isUpdated={this.state.isResultDBUpdated} />
       </div>
     );
   }

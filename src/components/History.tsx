@@ -7,12 +7,16 @@ import JSTDate from '../utility/JSTDate';
 import LocalDatabase from '../utility/LocalDatabase';
 import Result from '../utility/Result';
 
+interface HistoryProps {
+  isVisible: boolean;
+}
+
 interface HistoryState {
   history: Map<JSTDate, Result>;
 }
 
-class History extends React.Component<{}, HistoryState> {
-  constructor(props: {}) {
+class History extends React.Component<HistoryProps, HistoryState> {
+  constructor(props: HistoryProps) {
     super(props);
     this.state = {
       history: new Map<JSTDate, Result>()
@@ -24,7 +28,7 @@ class History extends React.Component<{}, HistoryState> {
   }
 
   public render() {
-    console.log(history);
+    if (!this.props.isVisible) return null;
     if (this.state.history.size === 0) {
       return (
         <div className="history">
