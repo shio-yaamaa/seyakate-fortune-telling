@@ -35,7 +35,7 @@ class History extends React.Component<{}, HistoryState> {
     } else {
       return (
         <div className="history">
-          <p>履歴</p>
+          <p>最近の履歴</p>
           <table>
             <tbody>
               {Array.from(this.state.history.entries()).map(([date, result]) => {

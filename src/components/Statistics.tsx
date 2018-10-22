@@ -47,6 +47,7 @@ class Statistics extends React.Component<{}, StatisticsState> {
   public render() {
     return (
       <div className="statistics">
+        <p>記録</p>
         <p>せやかて工藤: {this.state.seyakateCount}回</p>
         <p>惜しい</p>
         {this.createCloseResultList(1, this.state.closeResults)}

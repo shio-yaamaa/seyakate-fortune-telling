@@ -99,23 +99,35 @@ class LocalDatabase extends Dexie {
     const closeResultEntries = await this.results
       .where({ distance })
       .toArray();
-
-    // TODO: Inefficient implementation; Need to store chars as a string to efficiently bundle up identical results
-    const charsCountMap = new Map<[number, number, number, number], number>(); // Keys are result.chars
-    for (const resultEntry of closeResultEntries) {
-      for (const key of charsCountMap.keys()) {
-        if (arrayEqual(key, resultEntry.chars)) {
-          charsCountMap.set(key, charsCountMap.get(key)! + 1);
-          break;
-        }
-      }
-      charsCountMap.set(resultEntry.chars, 1);
-    }
     
-    const mapElements = Array.from(charsCountMap.entries()).map(([chars, count]) => {
-      return [Result.fromChars(chars), count] as [Result, number];
-    });
+    // TODO: Inefficient implementation; Need to store chars as a string to efficiently bundle up identical results
+    // Create a map {key: 'せやかて工藤', value: {result: Result, count: number}}
+    const resultCountMap = new Map<string, {result: Result, count: number}>();
+    for (const resultEntry of closeResultEntries) {
+      const result = Result.fromChars(resultEntry.chars);
+      const resultString = result.toString();
+      if (resultCountMap.has(resultString)) {
+        resultCountMap.set(resultString, {
+          result,
+          count: resultCountMap.get(resultString)!.count + 1
+        });
+      } else {
+        resultCountMap.set(resultString, { result, count: 1 });
+      }
+    }
 
+    const mapElements = Array.from(resultCountMap.entries()).map(([resultString, { result, count }]) => {
+      return [result, count] as [Result, number];
+    });
+    mapElements.sort((a, b) => {
+      // If they have the same count, the result with smaller chars index comes first
+      // Otherwise, the result with larger count comes first
+      if (a[1] === b[1]) {
+        return a[0].toChars() < b[0].toChars() ? -1 : 1;
+      } else {
+        return b[1] - a[1];
+      }
+    });
     return new Map<Result, number>(mapElements);
   }
 
