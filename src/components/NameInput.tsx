@@ -49,7 +49,7 @@ class NameInput extends React.Component<NameInputProps, NameInputState> {
         <div className="name-input-container">
           <input
             type="text"
-            placeholder={DEFAULT_NAME}
+            placeholder="名前を入力"
             value={this.currentInputName}
             onChange={this.handleChange}/>
           <button

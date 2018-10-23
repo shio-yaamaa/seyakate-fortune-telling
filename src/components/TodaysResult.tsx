@@ -64,7 +64,7 @@ class TodaysResult extends React.Component<TodaysResultProps, TodaysResultState>
         className={`todays-result ${(this.state.todaysResult && this.state.todaysResult.distance === 0) ? 'is-seyakate' : ''}`}>
         <p className="todays-result-title">今日の結果</p>
         <p className="todays-result-content">{textContent}</p>
-        {this.state.todaysResult && <p className="todays-result-message">
+        {!this.state.isFetching && this.state.todaysResult && <p className="todays-result-message">
           {this.state.todaysResult.distance === 0
             ? 'おめでとうございます！'
             : '明日も頑張りましょう。'}

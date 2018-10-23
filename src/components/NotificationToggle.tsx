@@ -1,51 +1,78 @@
 import * as React from 'react';
 import './NotificationToggle.css';
 
+import SubscriptionManager from '../utility/SubscriptionManager';
+import LocalDatabase from '../utility/LocalDatabase';
 import requestNotificationPermission from '../utility/requestNotificationPermission';
 
 interface NotificationToggleProps {
   isVisible: boolean;
-  isPushSupported: boolean;
-  isSubscriptionDBProcessing: boolean;
-  isNotificationEnabled: boolean;
-  toggleNotification: (enable: boolean) => void;
+}
+
+interface NotificationToggleState {
+  isProcessing: boolean; // True while waiting for a response from Lambda
+  isEnabled: boolean;
 }
  
-class NotificationToggle extends React.Component<NotificationToggleProps> {
+class NotificationToggle extends React.Component<NotificationToggleProps, NotificationToggleState> {
   constructor(props: NotificationToggleProps) {
     super(props);
+    this.state = {
+      isProcessing: false,
+      isEnabled: false
+    };
+
+    LocalDatabase.getIsNotificationEnabled().then(isEnabled => {
+      this.setState({ isEnabled });
+    });
+  }
+
+  private toggleNotification(enable: boolean) {
+    if (enable) {
+      SubscriptionManager.subscribe().then(() => {
+        this.setState({
+          isProcessing: false,
+          isEnabled: true
+        });
+      });
+    } else {
+      SubscriptionManager.unsubscribe().then(() => {
+        this.setState({
+          isProcessing: false,
+          isEnabled: false
+        });
+      });
+    }
+    this.setState({ isProcessing: true });
   }
 
   private handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) { // Checked
+    if (event.target.checked) {
       const isGranted = await requestNotificationPermission();
       if (isGranted) {
-        this.props.toggleNotification(true);
+        this.toggleNotification(true);
       }
-    } else { // Unchecked
-      this.props.toggleNotification(false);
+    } else {
+      this.toggleNotification(false);
     }
   }
 
   public render() {
     if (!this.props.isVisible) return null;
-    if (this.props.isPushSupported) {
-      if (this.props.isSubscriptionDBProcessing) {
-        return (
-          <div>処理中...</div>
-        );
-      } else {
-        return (
-          <section className="notification-toggle">
-            <input type="checkbox" checked={this.props.isNotificationEnabled} onChange={this.handleChange} />
-            <label>通知を受け取る</label>
-            <p className="secondary-text notification-tip">通知は日本時間で午前6時くらいです</p>
-          </section>
-        );
-      }
+    if (this.state.isProcessing) {
+      return (
+        <section className="notification-toggle">
+          <p>処理中</p>
+          <p className="secondary-text notification-tip">通知は日本時間で午前6時くらいです</p>
+        </section>
+      );
     } else {
       return (
-        <div>このブラウザは通知機能をサポートしていません</div>
+        <section className="notification-toggle">
+          <input type="checkbox" checked={this.state.isEnabled} onChange={this.handleChange} />
+          <label>通知を受け取る</label>
+          <p className="secondary-text notification-tip">通知は日本時間で午前6時くらいです</p>
+        </section>
       );
     }
   }

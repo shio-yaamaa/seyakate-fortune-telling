@@ -66,6 +66,10 @@ class LocalDatabase extends Dexie {
 
   // Results
 
+  public async getResultCount(): Promise<number> {
+    return await this.results.count();
+  }
+
   public async getResult(date: JSTDate): Promise<Result | null> {
     const resultEntry = await this.results.get(date.toDBNumber());
     return resultEntry ? Result.fromChars(resultEntry.chars) : null;

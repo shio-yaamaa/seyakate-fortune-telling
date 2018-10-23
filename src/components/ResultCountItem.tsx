@@ -4,11 +4,12 @@ import './ResultCountItem.css';
 interface ResultCountItemProps {
   resultString: string;
   count: number;
-  color: 'red' | 'green' | 'blue'; 
+  color: 'gray' | 'red' | 'green' | 'blue'; 
 }
 
 class ResultCountItem extends React.Component<ResultCountItemProps> {
   private colorMap = new Map<string, string>([
+    ['gray', '#BDBDBD'], // Gray 400
     ['red', '#E57373'], // Red 300
     ['green', '#66BB6A'], // Green 400
     ['blue', '#42A5F5'] // Blue 400

@@ -13,6 +13,7 @@ interface StatisticsProps {
 }
 
 interface StatisticsState {
+  resultCount: number;
   seyakateCount: number;
   closeResults: Map<Result, number>;
   bitCloseResults: Map<Result, number>;
@@ -22,6 +23,7 @@ class Statistics extends React.Component<StatisticsProps, StatisticsState> {
   constructor(props: StatisticsProps) {
     super(props);
     this.state = {
+      resultCount: 0,
       seyakateCount: 0,
       closeResults: new Map<Result, number>(),
       bitCloseResults: new Map<Result, number>()
@@ -37,6 +39,9 @@ class Statistics extends React.Component<StatisticsProps, StatisticsState> {
   }
 
   private fetchMetrics() {
+    LocalDatabase.getResultCount().then(count => {
+      this.setState({ resultCount: count });
+    });
     LocalDatabase.getSeyakateCount().then(count => {
       this.setState({ seyakateCount: count });
     });
@@ -73,10 +78,16 @@ class Statistics extends React.Component<StatisticsProps, StatisticsState> {
     return (
       <section className="statistics">
         <h1>回数</h1>
-        <ResultCountItem
-          resultString={'せやかて工藤'}
-          count={this.state.seyakateCount}
-          color="red" />
+        <div className="result-count-item-container">
+          <ResultCountItem
+            resultString={'診断回数'}
+            count={this.state.resultCount}
+            color="gray" />
+          <ResultCountItem
+            resultString={'せやかて工藤'}
+            count={this.state.seyakateCount}
+            color="red" />
+        </div>
         <h2>惜しい</h2>
         {this.createCloseResultList(1, this.state.closeResults)}
         <h2>ちょっと惜しい</h2>
