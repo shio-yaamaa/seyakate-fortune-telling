@@ -5,22 +5,42 @@ self.addEventListener('activate', () => console.log('Activated'));
 
 // Notification-related event listeners
 
-self.addEventListener('push', event => {
+self.addEventListener('push', () => {
   console.log('Push notification received!');
-  if (event.data) {
-    notificationManager.showNotification(self.registration);
-  }
+  const resultString = await fetchResult();
+  notificationManager.showNotification(self.registration, result);
 });
 
 self.addEventListener('notificationclick', event => {
   notificationManager.handleClick(event, clients);
 });
 
-// Notification Utility
+// IndexedDB
+
+class LocalDatabase {
+  dbName = 'LocalDatabase';
+  tableName = 'results';
+
+  getName() {
+
+  };
+}
+
+const localDatabase = new LocalDatabase();
+
+// Result
+
+const FETCH_RESULT_ENDPOINT = 'https://0u3uohct72.execute-api.ap-northeast-1.amazonaws.com/default/seyakate-fortune-telling-fetch-result';
+
+const fetchResult = name => {
+  const xhr;
+};
+
+// Notification
 
 const NOTIFICATION_TAG = 'seyakate-fortune-telling';
 const NOTIFICATION_TITLE = '今日の服部';
-const NOTIFICATION_URL = 'https://www.google.com/';
+const NOTIFICATION_URL = 'https://seyakate.netlify.com/';
 
 class NotificationManager {
   get bodyText() {

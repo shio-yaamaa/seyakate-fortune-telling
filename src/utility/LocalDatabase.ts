@@ -1,7 +1,6 @@
 import Dexie from 'dexie';
 import Result from './Result';
 import JSTDate from './JSTDate';
-import { arrayEqual } from './utility';
 
 interface ConfigEntry {
   key: string | null;
@@ -91,22 +90,20 @@ class LocalDatabase extends Dexie {
 
   public async getSeyakateCount(): Promise<number> {
     return await this.results
-      .filter(result => {
-        return arrayEqual(result.chars, Result.seyakate);
-      })
+      .where({ distance: 0 })
       .count();
   }
 
   // Returns a map of results and their counts
-  public async getResultsFilteredByDistance(distance: number): Promise<Map<Result, number>> {
-    const closeResultEntries = await this.results
-      .where({ distance })
+  public async getResultsFilteredByDistance(minDistance: number, maxDistance: number): Promise<Map<Result, number>> {
+    const resultEntries = await this.results
+      .where('distance').between(minDistance, maxDistance, true, true)
       .toArray();
     
     // TODO: Inefficient implementation; Need to store chars as a string to efficiently bundle up identical results
     // Create a map {key: 'せやかて工藤', value: {result: Result, count: number}}
     const resultCountMap = new Map<string, {result: Result, count: number}>();
-    for (const resultEntry of closeResultEntries) {
+    for (const resultEntry of resultEntries) {
       const result = Result.fromChars(resultEntry.chars);
       const resultString = result.toString();
       if (resultCountMap.has(resultString)) {

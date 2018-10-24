@@ -45,10 +45,10 @@ class Statistics extends React.Component<StatisticsProps, StatisticsState> {
     LocalDatabase.getSeyakateCount().then(count => {
       this.setState({ seyakateCount: count });
     });
-    LocalDatabase.getResultsFilteredByDistance(1).then(results => {
+    LocalDatabase.getResultsFilteredByDistance(1, 2).then(results => {
       this.setState({ closeResults: results });
     });
-    LocalDatabase.getResultsFilteredByDistance(2).then(results => {
+    LocalDatabase.getResultsFilteredByDistance(3, 3).then(results => {
       this.setState({ bitCloseResults: results });
     });
   }

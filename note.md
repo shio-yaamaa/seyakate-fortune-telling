@@ -71,12 +71,13 @@ navigator.serviceWorker.ready.then(registration =>
 
 ```javascript
 const script = document.createElement('script');
+let db;
 script.addEventListener('load', () => {
   db = new Dexie('LocalDatabase');
   db.version(1).stores({ configs: 'key, value', results: 'date, chars, distance' });
 });
 script.setAttribute('src', 'https://unpkg.com/dexie@latest/dist/dexie.js');
-document.body.append(script);
+document.body.appendChild(script);
 ```
 
 2. Do whatever operation you like

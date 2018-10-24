@@ -1,5 +1,3 @@
-import { arrayEqual } from './utility';
-
 export enum Char {
   Se = 0, Ya, Ka, Te
 }
@@ -7,7 +5,7 @@ export enum Char {
 export default class Result {
   public distance: number;
 
-  public static seyakate = [Char.Se, Char.Ya, Char.Ka, Char.Te];
+  public static seyakate: [Char, Char, Char, Char] = [Char.Se, Char.Ya, Char.Ka, Char.Te];
 
   private static charMap = new Map<Char, string>([
     [Char.Se, 'せ'],
@@ -20,7 +18,7 @@ export default class Result {
 
   private constructor(char1: Char, char2: Char, char3: Char, char4: Char) {
     this.chars = [char1, char2, char3, char4];
-    this.distance = Result.calculateDistance(this.chars);
+    this.distance = Result.computeDistance(this.chars, Result.seyakate);
   }
 
   // The string may optionally contain "工藤" at the end.
@@ -51,47 +49,19 @@ export default class Result {
     return this.chars;
   }
 
-  // Returns the distance from "せやかて"
-  // Distance is:
-  //   0 if exactly the same
-  //   1 (惜しい) if only one substitution, rotation, or swap is needed
-  //   2 (ちょっと惜しい) if two substitutions are needed or the chars have all the variation
-  //   3 otherwise
-  private static calculateDistance(chars: [Char, Char, Char, Char]): number {
-    const substitutionCount = chars.reduce((accumulator, current, index) => {
-      return accumulator + (current === Result.seyakate[index] ? 0 : 1);
+  private static computeDistance(source: [Char, Char, Char, Char], destination: [Char, Char, Char, Char]) {
+    // Create a cost matrix whose row and column indices correspond to the Char enum's values.
+    // Row represents the source and column represents the destination of the substitution.
+    // Identical Chars: 0, Chars with the same vowel: 1, Other combinations: 2
+    const substitutionCostMetrix = [
+      [0, 2, 2, 1],
+      [2, 0, 1, 2],
+      [2, 1, 0, 2],
+      [1, 2, 2, 0]
+    ];
+
+    return source.reduce((accumulator, current, index) => {
+      return accumulator + substitutionCostMetrix[current][destination[index]];
     }, 0);
-
-    // 0 or 1 substitutions
-    if (substitutionCount <= 1) {
-      return substitutionCount;
-    }
-
-    // 1 rotation to either direction
-    const rotatedLeft = [chars[1], chars[2], chars[3], chars[0]];
-    const rotatedRight = [chars[3], chars[0], chars[1], chars[2]];
-    if (arrayEqual(rotatedLeft, Result.seyakate) || arrayEqual(rotatedRight, Result.seyakate)) {
-      return 1;
-    }
-
-    // 1 swap
-    const swap1 = [chars[1], chars[0], chars[2], chars[3]];
-    const swap2 = [chars[0], chars[2], chars[1], chars[3]];
-    const swap3 = [chars[0], chars[1], chars[3], chars[2]];
-    if (arrayEqual(swap1, Result.seyakate) || arrayEqual(swap2, Result.seyakate) || arrayEqual(swap3, Result.seyakate)) {
-      return 1;
-    }
-
-    // 2 substitutions
-    if (substitutionCount === 2) {
-      return substitutionCount;
-    }
-
-    // All variation
-    if (arrayEqual([...chars].sort(), Result.seyakate)) {
-      return 2;
-    }
-
-    return 3;
   }
 }
