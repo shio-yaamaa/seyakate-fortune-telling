@@ -31,9 +31,11 @@ Firefox private browsing mode refuses IndexedDB mutation and yields errors in th
 |                     |IndexedDB|Notification and Push|
 |:--------------------|:-------:|:-------------------:|
 |Chrome               |||
-|IE 11                |||
+|IE 11                |PARTIAL  |NO                   |
 |Edge                 |||
 |Firefox              |||
+
+IE 11 doesn't support fetch API either, which is used in Service Worker.
 
 ## iOS
 
@@ -98,7 +100,3 @@ document.body.appendChild(script);
   <Statistics>
     <ResultCountItem> x ?
 ```
-
-curl https://me6hh9ycq9.execute-api.ap-northeast-1.amazonaws.com/default/seyakate-fortune-telling-write-subscriptions --request POST --header "Content-Type: application/json" --data '{"operation": "create", "subscription": {"endpoint": "aaa", "keys": {"p256dh": "bbb", "auth": "ccc"}}, "subscriptionId": "ddd"}'
-
-curl https://0u3uohct72.execute-api.ap-northeast-1.amazonaws.com/default/seyakate-fortune-telling-fetch-result --header "Content-Type: application/json" --data '{"name": "yaamaa"}'

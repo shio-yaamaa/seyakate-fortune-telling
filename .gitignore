@@ -25,3 +25,5 @@ yarn-error.log*
 # project-specific
 **/*.zip
 /lambda/*/main
+/public/*.js
+commands.md

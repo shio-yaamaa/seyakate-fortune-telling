@@ -27,9 +27,13 @@ export default class Result {
 
     if (originalString.length < 4) throw Error('The string is too short');
     for (let i = 0; i < 4; i++) {
-      const char: Char | null = Array.from(Result.charMap.entries()).reduce((accumulator, current) => {
-        return current[1] === originalString[i] ? current[0] : accumulator;
-      }, null);
+      let char: Char | null = null;
+      for (const [mapChar, mapKana] of Array.from(Result.charMap.entries())) {
+        if (mapKana === originalString[i]) {
+          char = mapChar;
+          break;
+        }
+      }
       if (char === null) throw Error('Invalid character');
       chars[i] = char;
     }

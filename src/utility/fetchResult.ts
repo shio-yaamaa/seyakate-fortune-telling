@@ -8,7 +8,7 @@ import LocalDatabase from './LocalDatabase';
 const fetchResult = async (name: string): Promise<Result> => {
   const response = await axios.post(
     process.env.REACT_APP_FETCH_RESULT_ENDPOINT!,
-    { name: name === "" ? DEFAULT_NAME : name }
+    { name: name === '' ? DEFAULT_NAME : name }
   );
   if (response.status === 500) {
     throw Error('Internal server error');
