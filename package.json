@@ -12,7 +12,7 @@
   },
   "scripts": {
     "start": "react-scripts-ts start",
-    "build": "react-scripts-ts build",
+    "build": "cd src/service-worker/ && npm run build && cd ../../ && react-scripts-ts build",
     "deploy": "netlify deploy",
     "prod-deploy": "netlify deploy --prod",
     "test": "react-scripts-ts test --env=jsdom",

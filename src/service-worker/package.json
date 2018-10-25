@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "watch": "webpack --watch",
-    "build": "webpack"
+    "watch": "webpack --mode=development --watch",
+    "build": "webpack --mode=production"
   },
   "devDependencies": {
     "dotenv-webpack": "^1.5.7",

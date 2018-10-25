@@ -35,9 +35,7 @@ class SubscriptionManager {
   }
   
   private async addSubscriptionToRemoteDB(subscription: PushSubscription): Promise<string> {
-    console.log('Subscription to register: ', subscription);
     const id = await SubscriptionDBManager.addSubscription(subscription);
-    console.log('Subscription ID:', id);
     if (id) {
       return id;
     } else {

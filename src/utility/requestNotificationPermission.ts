@@ -7,15 +7,18 @@ const requestNotificationPermission = async (): Promise<boolean> => {
   }
   
   // Check for the permission
-  if (Notification.permission === 'granted') {
+  switch (Notification.permission) {
+  case 'granted':
     return true;
-  } else { // 'denied', 'default', or not set
-    // Request permission
+  case 'denied':
+    alert('通知を送るための許可がブロックされているため通知を送れません。ブラウザの設定からブロックを取り消すことができます。');
+    return false;
+  default: // 'default' or not set
     const permission = await Notification.requestPermission();
     if (permission === 'granted') {
       return true;
     } else {
-      alert('許可されていないので通知を送れません');
+      alert('許可されなかったため通知を送れません');
       return false;
     }
   }

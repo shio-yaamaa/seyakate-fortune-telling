@@ -19,8 +19,8 @@ if (IndexedDB is supported) {
 |                     |IndexedDB|Notification and Push|
 |:--------------------|:-------:|:-------------------:|
 |Chrome               |YES      |YES                  |
+|Firefox              |YES      |YES                  |
 |Safari               |YES      |NO                   |
-|Firefox              |YES      ||
 
 Safari needs [Safari Push Notifications](https://developer.apple.com/notifications/safari-push-notifications/) to send/receive push notifications.
 
@@ -48,8 +48,8 @@ IE 11 doesn't support fetch API either, which is used in Service Worker.
 |                     |IndexedDB|Notification and Push|
 |:--------------------|:-------:|:-------------------:|
 |Default browser      |YES      |NO                   |
-|Chrome               |YES      ||
-|Firefox              |||
+|Chrome               |YES      |YES                  |
+|Firefox              |YES      |YES                  |
 
 # Date/Time
 
