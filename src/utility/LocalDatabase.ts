@@ -82,13 +82,17 @@ class LocalDatabase extends Dexie {
 
   // Results are sorted in reverse chronological order
   public async getRecentResultsWithDates(count: number): Promise<Map<JSTDate, Result>> {
-    const resultEntries = await this.results
+    const orderedResultEntries = await this.results
       .orderBy('date')
-      .reverse()
-      .offset(1) // Skip today's result
+      .reverse();
+    const firstResultEntry = await orderedResultEntries.clone().first(); // The most-recent entry; Not guaranteed to be today's
+    if (!firstResultEntry) return new Map<JSTDate, Result>();
+    const isTodaysIncluded = firstResultEntry.date === JSTDate.today().toDBNumber();
+    const recentResultEntries = await orderedResultEntries
+      .offset(isTodaysIncluded ? 1 : 0) // Skip today's result if it exists
       .limit(count)
       .toArray();
-    return new Map<JSTDate, Result>(resultEntries.map(entry => {
+    return new Map<JSTDate, Result>(recentResultEntries.map(entry => {
       // Requres type assertion since TypeScript infers [JSTDate, Result] is of type (JSTDate | Result)[]
       return [JSTDate.fromDBNumber(entry.date), Result.fromChars(entry.chars)] as [JSTDate, Result];
     }));

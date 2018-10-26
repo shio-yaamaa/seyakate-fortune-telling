@@ -26,4 +26,4 @@ yarn-error.log*
 **/*.zip
 /lambda/*/main
 /public/*.js
-commands.md
+private-note.md

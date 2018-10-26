@@ -23,6 +23,7 @@ class NameInput extends React.Component<NameInputProps, NameInputState> {
     };
 
     LocalDatabase.getName().then((name: string) => {
+      if (name === null || name === '') return; // Name should be empty on the first access
       this.setState({
         inputName: name,
         registeredName: name
