@@ -1,42 +1,50 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
+  <head prefix="og: http://ogp.me/ns#">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="theme-color" content="#000000">
-    <!--
-      manifest.json provides metadata used when your web app is added to the
-      homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
-    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
+
+    <title>せやかて工藤診断</title>
+
+    <!-- External resources -->
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans+JP" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
-    <title>せやかて工藤診断</title>
+
+    <!-- Icons -->
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="%PUBLIC_URL%/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="%PUBLIC_URL%/favicon-16x16.png">
+
+    <!-- OGP tags -->
+    <meta property="og:title" content="せやかて工藤診断">
+    <meta property="og:site_name" content="せやかて工藤診断">
+    <meta property="og:description" content="診断メーカーの「せやかて工藤診断」の結果を毎朝通知します">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://seyakate.netlify.com/">
+    <meta property="og:image" content="https://seyakate.netlify.com/og-image.png"> <!-- Needs to be an absolute URL to be recognized by Twitter Cards -->
+    <meta property="og:locale" content="ja_JP">
+
+    <!-- Twitter cards -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@yaa_maa_520" />
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-79743086-4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-79743086-4');
+    </script>
   </head>
   <body>
     <noscript>
       JavaScriptを有効にしてください。
     </noscript>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
   </body>
 </html>
