@@ -3,14 +3,14 @@ import './TodaysResult.css';
 
 import TweetButton from './TweetButton';
 
-import JSTDate from '../utility/JSTDate';
+// import JSTDate from '../utility/JSTDate';
 import LocalDatabase from '../utility/LocalDatabase';
 import Result from '../utility/Result';
 import fetchResult from '../utility/fetchResult';
 
 interface TodaysResultProps {
   isVisible: boolean;
-  name: string;
+  isNameUpdated: boolean;
   notifyResultDBUpdate: () => void;
 }
 
@@ -26,30 +26,25 @@ class TodaysResult extends React.Component<TodaysResultProps, TodaysResultState>
       isFetching: true,
       todaysResult: null
     };
-    // If today's result is not stored in IndexedDB, go get it
-    LocalDatabase.getResult(JSTDate.today()).then((result: Result | null) => {
-      if (result) {
-        this.setState({ isFetching: false, todaysResult: result });
-      } else {
-        this.fetchAndSetResult(this.props.name);
-      }
-    });
   }
 
   public componentDidUpdate(prevProps: TodaysResultProps) {
-    if (prevProps.name !== this.props.name) {
+    if (!prevProps.isNameUpdated && this.props.isNameUpdated) {
       this.setState({ isFetching: true });
-      this.fetchAndSetResult(this.props.name);
+      this.fetchAndSetResult();
     }
   }
 
-  private fetchAndSetResult(name: string) {
+  private async fetchAndSetResult() {
+    const name = await LocalDatabase.getName();
+    if (name === null) return;
     fetchResult(name)
       .then((fetchedResult: Result) => {
         this.setState({ isFetching: false, todaysResult: fetchedResult });
         this.props.notifyResultDBUpdate();
       })
       .catch(error => {
+        console.log('Failed to fetch today\'s result', error);
         this.setState({ isFetching: false, todaysResult: null });
       });
   }

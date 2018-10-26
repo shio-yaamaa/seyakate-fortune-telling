@@ -8,41 +8,42 @@ import TodaysResult from './TodaysResult';
 import History from './History';
 import Statistics from './Statistics';
 
-import LocalDatabase from '../utility/LocalDatabase';
-
 interface AppProps {
   isIndexedDBSupported: boolean;
   isPushSupported: boolean;
 }
 
 interface AppState {
-  name: string;
+  isNameUpdated: boolean; // To trigger a new fetch in TodaysResult component
   isResultDBUpdated: boolean; // To reflect the result fetched by TodaysResult in Statitics rendering
+  isFullContentAvailable: boolean; // Whether to show the components other than NameInput. True when the name is set
 }
 
 class App extends React.Component<AppProps, AppState> {
   constructor(props: AppProps) {
     super(props);
     this.state = {
-      name: '',
-      isResultDBUpdated: false
+      isNameUpdated: false,
+      isResultDBUpdated: false,
+      isFullContentAvailable: false
     };
-
-    LocalDatabase.getName().then((name: string) => {
-      this.setState({ name });
-    });
   }
 
   public componentDidUpdate(prevProps: AppProps, prevState: AppState) {
-    if (prevState.isResultDBUpdated) {
-      this.setState({ isResultDBUpdated: false });
+    if (prevState.isNameUpdated || prevState.isResultDBUpdated) {
+      this.setState({
+        isNameUpdated: false,
+        isResultDBUpdated: false
+      });
     }
   }
 
-  private setName = (name: string) => {
-    LocalDatabase.setName(name);
-    this.setState({ name });
-  }
+  private notifyNameUpdate = () => {
+    this.setState({
+      isNameUpdated: true,
+      isFullContentAvailable: true
+    });
+  };
 
   private notifyResultDBUpdate = () => {
     this.setState({ isResultDBUpdated: true });
@@ -54,20 +55,24 @@ class App extends React.Component<AppProps, AppState> {
         <Description
           isIndexedDBSupported={this.props.isIndexedDBSupported}
           isPushSupported={this.props.isPushSupported} />
-        {this.props.isIndexedDBSupported && <NameInput
-          name={this.state.name}
-          setName={this.setName} />}
-        {this.props.isIndexedDBSupported && this.props.isPushSupported && <NotificationToggle
-          isVisible={this.state.name !== ''} />}
-        {this.props.isIndexedDBSupported && <TodaysResult
-          isVisible={this.state.name !== ''}
-          name={this.state.name}
-          notifyResultDBUpdate={this.notifyResultDBUpdate} />}
-        {this.props.isIndexedDBSupported && <History
-          isVisible={this.state.name !== ''} />}
-        {this.props.isIndexedDBSupported && <Statistics
-          isVisible={this.state.name !== ''}
-          isUpdated={this.state.isResultDBUpdated} />}
+        {this.props.isIndexedDBSupported &&
+          <NameInput
+            notifyNameUpdate={this.notifyNameUpdate} />}
+        {this.props.isIndexedDBSupported && this.props.isPushSupported &&
+          <NotificationToggle
+            isVisible={this.state.isFullContentAvailable} />}
+        {this.props.isIndexedDBSupported &&
+          <TodaysResult
+            isVisible={this.state.isFullContentAvailable}
+            isNameUpdated={this.state.isNameUpdated}
+            notifyResultDBUpdate={this.notifyResultDBUpdate} />}
+        {this.props.isIndexedDBSupported &&
+          <History
+            isVisible={this.state.isFullContentAvailable} />}
+        {this.props.isIndexedDBSupported &&
+          <Statistics
+            isVisible={this.state.isFullContentAvailable}
+            isUpdated={this.state.isResultDBUpdated} />}
       </div>
     );
   }

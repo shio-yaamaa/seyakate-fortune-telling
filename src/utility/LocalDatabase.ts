@@ -17,6 +17,8 @@ class LocalDatabase extends Dexie {
   private configs: Dexie.Table<ConfigEntry, string>
   private results: Dexie.Table<ResultEntry, number>
 
+  private nameCache: string | null; // To quickly get the name after it's set
+
   constructor() {
     super('LocalDatabase');
 
@@ -31,17 +33,21 @@ class LocalDatabase extends Dexie {
       this.configs.add({ key: 'name', value: '' });
       this.configs.add({ key: 'subscriptionId', value: null });
     });
+
+    this.nameCache = null;
   }
 
   // Name
 
   public async getName(): Promise<string | null> {
+    if (this.nameCache !== null) return this.nameCache;
     const nameEntry = await this.configs.get('name');
     return nameEntry ? nameEntry.value : null;
   }
 
   public async setName(name: string) {
     await this.configs.put({key: 'name', value: name});
+    this.nameCache = name;
   }
 
   // Subscription ID

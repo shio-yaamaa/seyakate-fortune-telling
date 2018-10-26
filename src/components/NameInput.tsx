@@ -3,44 +3,47 @@ import './NameInput.css';
 
 import { DEFAULT_NAME } from '../utility/constants';
 
+import LocalDatabase from '../utility/LocalDatabase';
+
 interface NameInputProps {
-  name: string;
-  setName: (name: string) => void;
+  notifyNameUpdate: () => void;
 }
 
 interface NameInputState {
-  isConfirmButtonAvailable: boolean; // True if there is a change in the input name
+  inputName: string; // The string currently typed in the input
+  registeredName: string; // The name stored in the DB
 }
 
 class NameInput extends React.Component<NameInputProps, NameInputState> {
-  private currentInputName: string;
-  private shouldAcceptProps = true; // True when the name is fetched from DB; false otherwise because currentInputName holds the up-to-date input name
-
   constructor(props: NameInputProps) {
     super(props);
     this.state = {
-      isConfirmButtonAvailable: false
+      inputName: '',
+      registeredName: ''
     };
-    this.currentInputName = name;
-  }
 
-  public shouldComponentUpdate(nextProps: NameInputProps): boolean {
-    if (this.shouldAcceptProps) {
-      this.currentInputName = nextProps.name;
-      this.shouldAcceptProps = false;
-    }
-    return true;
+    LocalDatabase.getName().then((name: string) => {
+      this.setState({
+        inputName: name,
+        registeredName: name
+      });
+      this.props.notifyNameUpdate();
+    });
   }
 
   private handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.currentInputName = event.target.value;
-    this.setState({isConfirmButtonAvailable: this.currentInputName !== this.props.name});
+    this.setState({ inputName: event.target.value });
   }
 
   private handleConfirm = () => {
-    this.currentInputName = this.currentInputName || DEFAULT_NAME;
-    this.props.setName(this.currentInputName);
-    this.setState({isConfirmButtonAvailable: false});
+    const newName = this.state.inputName || DEFAULT_NAME;
+    this.setState({
+      inputName: newName,
+      registeredName: newName
+    });
+    LocalDatabase.setName(newName).then(() => {
+      this.props.notifyNameUpdate();
+    });
   }
 
   public render() {
@@ -50,11 +53,11 @@ class NameInput extends React.Component<NameInputProps, NameInputState> {
           <input
             type="text"
             placeholder="名前を入力"
-            value={this.currentInputName}
+            value={this.state.inputName}
             onChange={this.handleChange}/>
           <button
             onClick={this.handleConfirm}
-            disabled={!this.state.isConfirmButtonAvailable}>
+            disabled={this.state.inputName === this.state.registeredName}>
             決定
           </button>
           </div>
