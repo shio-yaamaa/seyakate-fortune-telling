@@ -10,17 +10,21 @@ declare var self: ServiceWorkerGlobalScope;
 
 self.addEventListener('push', async () => {
   try {
-    // Whether today's result has been already fetched or not determines if the notification should be silent or not
     const resultInDB = await LocalDatabase.getResult(JSTDate.today());
-
-    const name = await LocalDatabase.getName();
-    if (name === null) throw Error('Could not fetch name from DB');
-    const result = await fetchResult(name === '' ? DEFAULT_NAME : name);
-    NotificationManager.showNotification(self.registration, result, resultInDB !== null);
-    
-    // Store today's result in the DB if it hasn't been saved yet
+    let newResult = null;
     if (resultInDB === null) {
-      LocalDatabase.setTodaysResult(result);
+      const name = await LocalDatabase.getName();
+      if (name === null) throw Error('Could not fetch name from DB');
+      newResult = await fetchResult(name === '' ? DEFAULT_NAME : name);
+      LocalDatabase.setTodaysResult(newResult);
+    }
+
+    if (!(resultInDB === null && newResult === null)) {
+      NotificationManager.showNotification(
+        self.registration,
+        resultInDB === null ? newResult! : resultInDB!,
+        resultInDB !== null
+      );
     }
   } catch (error) {
     console.log(error);

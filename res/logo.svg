@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   height="512"
+   width="512"
+   version="1.1"
+   id="svg2"
+   viewBox="0 0 512 512"
+   role="img"
+   class="svg-inline--fa fa-bell fa-w-14"
+   data-icon="bell"
+   data-prefix="fas"
+   aria-hidden="true">
+  <metadata
+     id="metadata10">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs8" />
+  <rect
+     ry="33.627102"
+     y="0"
+     x="0"
+     height="512"
+     width="512"
+     id="rect4138"
+     style="fill:#42b983;fill-opacity:1;stroke:none;stroke-width:30;stroke-miterlimit:4;stroke-dasharray:none" />
+  <path
+     style="fill:#ffffff"
+     id="path4"
+     d="m 256,252.67797 c 9.43305,0 17.08472,-7.65168 17.08472,-17.09274 l -34.16945,0 c 0,9.44106 7.65167,17.09274 17.08473,17.09274 z m 57.52509,-39.98366 c -5.15988,-5.54446 -14.8146,-13.88519 -14.8146,-41.20687 0,-20.75166 -14.5502,-37.36367 -34.16947,-41.43922 l 0,-5.56583 c 0,-4.71919 -3.82449,-8.54637 -8.54102,-8.54637 -4.71653,0 -8.54103,3.82718 -8.54103,8.54637 l 0,5.56583 c -19.61926,4.07555 -34.16946,20.68756 -34.16946,41.43922 0,27.32168 -9.65474,35.66241 -14.8146,41.20687 -1.60245,1.72263 -2.31286,3.78177 -2.29951,5.79817 0.0294,4.38002 3.46662,8.54637 8.57307,8.54637 l 102.50304,0 c 5.10646,0 8.54638,-4.16635 8.57308,-8.54637 0.0134,-2.0164 -0.69706,-4.07822 -2.2995,-5.79817 z" />
+  <flowRoot
+     transform="translate(410.31766,-131.66102)"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:40px;line-height:125%;font-family:'Hiragino Sans';-inkscape-font-specification:'Hiragino Sans';letter-spacing:8.32000065px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     id="flowRoot4140"
+     xml:space="preserve"><flowRegion
+       id="flowRegion4142"><rect
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Hiragino Sans';-inkscape-font-specification:'Hiragino Sans';letter-spacing:8.32000065px;fill:#ffffff"
+         y="451.25424"
+         x="-342.77966"
+         height="156.20338"
+         width="492.47458"
+         id="rect4144" /></flowRegion><flowPara
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:90px;font-family:'Hiragino Sans';-inkscape-font-specification:'Hiragino Sans';letter-spacing:8.32000065px;fill:#ffffff"
+       id="flowPara4146">せやかて</flowPara></flowRoot></svg>

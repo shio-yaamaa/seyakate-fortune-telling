@@ -6,8 +6,8 @@ class NotificationManager {
   showNotification(registration: ServiceWorkerRegistration, result: Result, isSilent: boolean) {
     registration.showNotification(result.toString(), {
       tag: this.tag,
-      // icon:
-      // badge:
+      icon: '/logo.png',
+      badge: '/notification-badge.png',
       silent: isSilent
     });
   }
