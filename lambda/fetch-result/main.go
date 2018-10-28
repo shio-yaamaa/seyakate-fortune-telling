@@ -54,7 +54,8 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 	responseHeaders := map[string]string{
 		"Access-Control-Allow-Origin":  os.Getenv("ACCESS_CONTROL_ALLOW_ORIGIN"),
 		"Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-    	"Access-Control-Allow-Headers": "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With",
+		"Access-Control-Allow-Headers": "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With",
+		"Content-Type": "application/json; charset=utf-8",
 	}
 
 	if request.HTTPMethod == "OPTIONS" {

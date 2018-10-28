@@ -21,7 +21,7 @@ class Description extends React.Component<DescriptionProps> {
 
     return (
       <section className="description">
-        <p><a href={process.env.REACT_APP_SHINDAN_URL}>せやかて工藤診断</a>の結果を毎朝お届けします。名前を入力して、通知を有効にしてください。</p>
+        <p><a href={process.env.REACT_APP_SHINDAN_URL} target="_blank">せやかて工藤診断</a>の結果を毎朝お届けします。名前を入力して、通知を有効にしてください。</p>
         {warning}
       </section>
     );

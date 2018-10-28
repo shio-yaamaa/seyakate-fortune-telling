@@ -2,6 +2,7 @@ import * as React from 'react';
 import './TweetButton.css';
 
 import Result from '../utility/Result';
+import { constructQueryParams } from '../utility/utility';
 
 const HASH_TAG = '#せやかて工藤';
 
@@ -11,23 +12,20 @@ interface TweetButtonProps {
 
 class TweetButton extends React.Component<TweetButtonProps> {
   public render() {
-    const queryParams = new URLSearchParams();
-    queryParams.append(
-      'ref_src',
-      'twsrc%5Etfw'
-    );
-    queryParams.append(
-      'text',
-      this.props.todaysResult.toString()
-        + '\n' + HASH_TAG
-        + '\n' + process.env.REACT_APP_SHINDAN_URL
-    );
+    const tweetText = this.props.todaysResult.toString()
+      + '\n' + HASH_TAG
+      + '\n' + process.env.REACT_APP_SHINDAN_URL;
+    const queryParamsMap = new Map<string, string>([
+      ['ref_src', 'twsrc%5Etfw'],
+      ['text', tweetText]
+    ]);
+    const queryParams = constructQueryParams(queryParamsMap);
     
     return (
       <div className="tweet-button">
         <a
           className="twitter-share-button"
-          href={`https://twitter.com/intent/tweet?${queryParams.toString()}`}
+          href={`https://twitter.com/intent/tweet${queryParams}`}
           target="_blank"
           data-show-count="false">
           結果をツイート

@@ -2,14 +2,6 @@
   "name": "seyakate-fortune-telling",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "axios": "^0.18.0",
-    "dexie": "^2.0.4",
-    "moment-timezone": "^0.5.21",
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2",
-    "react-scripts-ts": "3.1.0"
-  },
   "scripts": {
     "start": "react-scripts-ts start",
     "build": "cd src/service-worker/ && npm run build && cd ../../ && react-scripts-ts build",
@@ -23,6 +15,14 @@
     "lambda-write-subscriptions-zip": "make zip -C lambda/write-subscriptions/",
     "lambda-fetch-result-build": "make build -C lambda/fetch-result/",
     "lambda-fetch-result-zip": "make zip -C lambda/fetch-result/"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "dexie": "^2.0.4",
+    "moment-timezone": "^0.5.21",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
+    "react-scripts-ts": "3.1.0"
   },
   "devDependencies": {
     "@types/jest": "^23.3.5",

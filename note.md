@@ -30,18 +30,22 @@ Firefox private browsing mode refuses IndexedDB mutation and yields errors in th
 
 |                     |IndexedDB|Notification and Push|
 |:--------------------|:-------:|:-------------------:|
-|Chrome               |||
-|IE 11                |PARTIAL  |NO                   |
-|Edge                 |||
-|Firefox              |||
+|Chrome               |YES      |YES                  |
+|Edge                 |YES      |YES                  |
+|Firefox              |YES      |YES                  |
 
-IE 11 doesn't support fetch API either, which is used in Service Worker.
+Firefox's notification isn't kept in the notification area.
+Only Edge can receive notifications even when the browser is closed?
+
+Gave up on IE 11 because it lacks so many language features.
 
 ## iOS
 
 |                     |IndexedDB|Notification and Push|
 |:--------------------|:-------:|:-------------------:|
-|Safari               |?        |NO                   |
+|Safari               |YES      |NO                   |
+
+Confirmed on iOS 9.3 using Simulator.
 
 ## Android
 
