@@ -59,18 +59,6 @@ Confirmed on iOS 9.3 using Simulator.
 
 This app only cares about JST.
 
-# Unsubscribing script
-
-```javascript
-navigator.serviceWorker.ready.then(registration =>
-  registration.pushManager.getSubscription().then(subscription =>
-    subscription.unsubscribe().then(() =>
-      console.log('Unsubscribed')
-    )
-  )
-);
-```
-
 # Manipulating IndexedDB from the browser console
 
 1. Add Dexie script and define the table schema
